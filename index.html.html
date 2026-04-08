@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roteiros da Jornada do Cliente — Ramos Duarte</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0e0e0d; --surface: #161614; --surface2: #1e1e1b;
+    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.16);
+    --text: #e8e6df; --muted: #888780; --faint: #444441;
+    --gold: #c9a84c; --gold-dim: rgba(201,168,76,0.12);
+    --teal: #1D9E75; --teal-dim: rgba(29,158,117,0.1);
+    --purple: #7F77DD; --purple-dim: rgba(127,119,221,0.1);
+    --amber: #BA7517; --amber-dim: rgba(186,117,23,0.1);
+    --coral: #D85A30; --coral-dim: rgba(216,90,48,0.1);
+    --r: 10px;
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.5; min-height: 100vh; }
+  .page { max-width: 960px; margin: 0 auto; padding: 48px 32px 80px; }
+
+  .header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 0.5px solid var(--border); }
+  .header .eyebrow { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .header h1 { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; color: var(--text); line-height: 1.15; margin-bottom: 10px; }
+  .header h1 em { font-style: italic; color: var(--gold); }
+  .header-note { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .team-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+  .team-pill { display: flex; align-items: center; gap: 7px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: 20px; padding: 6px 12px; font-size: 12px; }
+  .team-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .team-name { font-weight: 500; color: var(--text); }
+  .team-role { color: var(--muted); }
+
+  .block-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 32px 0 16px; display: flex; align-items: center; gap: 10px; }
+  .block-label span { white-space: nowrap; }
+  .block-label::after { content: ''; flex: 1; height: 0.5px; background: var(--border); }
+
+  .roteiro { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 14px; margin-bottom: 16px; overflow: hidden; }
+  .roteiro-header { padding: 14px 18px; border-bottom: 0.5px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; cursor: pointer; user-select: none; }
+  .roteiro-header:hover { background: rgba(255,255,255,0.02); }
+  .roteiro-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .roteiro-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+  .tag-teal { background: rgba(29,158,117,0.15); color: #9FE1CB; }
+  .tag-purple { background: rgba(127,119,221,0.15); color: #CECBF6; }
+  .tag-amber { background: rgba(186,117,23,0.15); color: #FAC775; }
+  .tag-coral { background: rgba(216,90,48,0.15); color: #F0997B; }
+  .tag-gold { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .tag-gray { background: rgba(255,255,255,0.06); color: var(--muted); }
+  .chevron { color: var(--faint); font-size: 16px; transition: transform 0.2s; flex-shrink: 0; margin-top: 2px; }
+  .roteiro.open .chevron { transform: rotate(90deg); }
+
+  .roteiro-body { display: none; padding: 18px 18px 20px; border-top: 0.5px solid var(--border); }
+  .roteiro.open .roteiro-body { display: block; }
+
+  .section-title { font-size: 10px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); margin-bottom: 10px; }
+
+  .msg-box { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--r); padding: 14px 16px; font-size: 13px; color: var(--text); line-height: 1.8; white-space: pre-wrap; font-family: 'DM Sans', sans-serif; margin-bottom: 16px; }
+  .msg-box .ph { color: var(--gold); font-style: italic; }
+
+  .variation { margin-bottom: 10px; }
+  .variation-label { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .variation-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .variation-msg { background: rgba(255,255,255,0.03); border: 0.5px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 12px; color: var(--muted); line-height: 1.75; white-space: pre-wrap; }
+  .variation-msg .ph { color: var(--gold); font-style: italic; }
+
+  .instruction { border-left: 2px solid var(--border2); padding: 8px 14px; margin-bottom: 16px; font-size: 12px; color: var(--muted); line-height: 1.65; border-radius: 0; }
+  .instruction strong { color: var(--text); font-weight: 500; }
+
+  .never-box { background: var(--coral-dim); border: 0.5px solid rgba(216,90,48,0.2); border-radius: 8px; padding: 12px 14px; }
+  .never-title { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #F0997B; margin-bottom: 8px; }
+  .never-item { font-size: 12px; color: rgba(240,153,123,0.8); padding: 3px 0; line-height: 1.5; }
+  .never-item::before { content: '— '; }
+
+  .divider { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
+
+  .script-line { margin-bottom: 12px; }
+  .script-who { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
+  .script-text { background: var(--surface2); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--text); line-height: 1.7; font-style: italic; border-left: 2px solid var(--border2); border-radius: 0; }
+  .script-text .ph { color: var(--gold); font-style: normal; }
+
+  .footer { margin-top: 52px; padding-top: 20px; border-top: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .footer-brand { font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--gold); }
+  .footer-note { font-size: 11px; color: var(--faint); }
+
+  @media (max-width: 600px) { .page { padding: 28px 16px 48px; } .header h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="eyebrow">Ramos Duarte Transportes — Playbook Comercial</div>
+    <h1>Roteiros da <em>jornada</em><br>do cliente</h1>
+    <p class="header-note">Todos os roteiros seguem a ordem do mapa de jornada. Os campos em <span style="color:var(--gold); font-style:italic;">dourado</span> são obrigatoriamente personalizados para cada cliente. Nunca enviar template sem personalização.</p>
+  </div>
+
+  <div class="team-row">
+    <div class="team-pill"><div class="team-dot" style="background:#1D9E75;"></div><span class="team-name">Joana</span><span class="team-role">— operação em tempo real</span></div>
+    <div class="team-pill"><div class="team-dot" style="background:#7F77DD;"></div><span class="team-name">Pedro</span><span class="team-role">— comercial e relacionamento</span></div>
+    <div class="team-pill"><div class="team-dot" style="background:#c9a84c;"></div><span class="team-name">Halana</span><span class="team-role">— experiência e carteira</span></div>
+  </div>
+
+  <!-- BLOCO 1: OPERAÇÃO RECORRENTE -->
+  <div class="block-label"><span>Operação recorrente — cada embarque</span></div>
+
+  <!-- R1 -->
+  <div class="roteiro" id="r1">
+    <div class="roteiro-header" onclick="toggle('r1')">
+      <div>
+        <div class="roteiro-title">1. Confirmação de saída</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-teal">Joana</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">No momento da saída</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, sua carga saiu agora.
+
+Motorista: <span class="ph">[Nome do motorista]</span>
+Saída: <span class="ph">[horário]</span>
+Previsão de chegada: <span class="ph">[data e horário]</span>
+
+Qualquer dúvida, pode chamar. 👍</div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction">É a mensagem mais curta da jornada — e precisa ser assim. <strong>Preenche os três campos e envia.</strong> Não acrescentes texto desnecessário. O cliente quer a informação, não a conversa.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Enviar sem a previsão de chegada — é o dado mais importante</div>
+        <div class="never-item">Demorar — a mensagem sai no momento em que o caminhão parte</div>
+        <div class="never-item">Adicionar texto institucional ou comercial</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R2 -->
+  <div class="roteiro" id="r2">
+    <div class="roteiro-header" onclick="toggle('r2')">
+      <div>
+        <div class="roteiro-title">2. Update em trânsito — quando há alteração</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-teal">Joana</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-coral">Só se houver mudança</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base — prazo já confirmado</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, passando para te atualizar.
+
+<span class="ph">[Descreve o imprevisto em uma linha — ex: "Houve um congestionamento na BR-116 próximo a Feira de Santana."]</span>
+
+Já redirecionamos e a nova previsão de chegada é <span class="ph">[data e horário]</span>.
+
+Qualquer dúvida estou aqui.</div>
+
+      <p class="section-title">Variação — prazo ainda sendo apurado</p>
+      <div class="variation">
+        <div class="variation-msg">Oi <span class="ph">[Nome]</span>, tivemos um imprevisto na rota e estou apurando o novo prazo. Te dou retorno em até <span class="ph">[X minutos]</span>.</div>
+      </div>
+
+      <p class="section-title">Regra de ouro</p>
+      <div class="instruction"><strong>O cliente é o primeiro a saber — nunca o último.</strong> Se ainda não tens o novo prazo, diz isso com tempo de retorno definido. Nunca fiques em silêncio quando sabes que há um imprevisto.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Esperar que o cliente pergunte para informar</div>
+        <div class="never-item">Comunicar o problema sem ter pelo menos o próximo passo</div>
+        <div class="never-item">Detalhar excessivamente o imprevisto — o cliente quer a solução</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R3 -->
+  <div class="roteiro" id="r3">
+    <div class="roteiro-header" onclick="toggle('r3')">
+      <div>
+        <div class="roteiro-title">3. Confirmação de entrega + canhoto</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-teal">Joana</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">No acto da entrega</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, entregue! ✅
+
+<span class="ph">[foto do canhoto assinado]</span>
+
+Horário de entrega: <span class="ph">[horário]</span>
+Recebido por: <span class="ph">[nome de quem assinou, se souber]</span></div>
+
+      <p class="section-title">Variação — com observação na entrega</p>
+      <div class="variation">
+        <div class="variation-msg">Oi <span class="ph">[Nome]</span>, entregue! ✅
+
+<span class="ph">[foto do canhoto]</span>
+
+Horário: <span class="ph">[horário]</span>. <span class="ph">[Observação — ex: "Volume conferido e lacre intacto na chegada."]</span></div>
+      </div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction">A foto do canhoto é <strong>obrigatória</strong>. Sempre que possível inclui o nome de quem recebeu. Se houve observação relevante na entrega, menciona — transparência é diferencial.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Enviar sem a foto do canhoto</div>
+        <div class="never-item">Demorar — sai no momento da entrega, não horas depois</div>
+        <div class="never-item">Omitir observações relevantes da entrega</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R4 -->
+  <div class="roteiro" id="r4">
+    <div class="roteiro-header" onclick="toggle('r4')">
+      <div>
+        <div class="roteiro-title">4. Feedback rápido pós-entrega</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-gold">Halana</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">24–48h após entrega</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Passando para saber como foi a operação de <span class="ph">[data / rota]</span>. Tudo correu conforme o esperado?
+
+Se tiver algum ponto de melhoria, pode falar. 🙏</div>
+
+      <p class="section-title">Variação — quando houve ocorrência</p>
+      <div class="variation">
+        <div class="variation-msg">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Quero saber como ficou do seu lado após o imprevisto de <span class="ph">[descreve em uma linha]</span>. Tudo resolvido conforme o esperado?
+
+Internamente já ajustamos o processo. Qualquer dúvida estou aqui.</div>
+      </div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction"><strong>Sempre referencia a operação específica</strong> — data ou rota. Nunca envies uma mensagem genérica de "como foi?" sem contexto. Uma pergunta só — mais do que uma reduz a taxa de resposta.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Enviar sem referenciar a operação específica</div>
+        <div class="never-item">Esperar mais de 48h — a memória da experiência esfria rápido</div>
+        <div class="never-item">Fazer mais de uma pergunta na mesma mensagem</div>
+        <div class="never-item">Ignorar resposta negativa — feedback crítico vira acção no próprio dia</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R5 -->
+  <div class="roteiro" id="r5">
+    <div class="roteiro-header" onclick="toggle('r5')">
+      <div>
+        <div class="roteiro-title">5. Tratamento de ocorrência com fechamento formal</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-teal">Joana resolve</span>
+          <span class="tag tag-gold">Halana comunica</span>
+          <span class="tag tag-coral">Se houver ocorrência</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem de Joana — comunicação imediata do imprevisto</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, passando para te informar.
+
+<span class="ph">[Descreve o problema em uma linha.]</span> Já estamos atuando — <span class="ph">[descreve o que já foi feito ou o próximo passo com prazo]</span>.
+
+Te mantenho atualizado.</div>
+
+      <p class="section-title">Mensagem de Halana — fechamento formal após resolução</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, aqui é a Halana.
+
+Quero fazer o fechamento do ocorrido em <span class="ph">[data / rota]</span>: <span class="ph">[descreve o que aconteceu em uma linha]</span>.
+
+Identificamos a causa e já ajustamos <span class="ph">[descreve o que foi alterado no processo]</span> para que não se repita.
+
+Fico à disposição para qualquer dúvida. Obrigada pela compreensão.</div>
+
+      <p class="section-title">Como funciona a divisão</p>
+      <div class="instruction"><strong>Joana</strong> comunica o imprevisto imediatamente e acompanha a resolução operacional. <strong>Halana</strong> envia o fechamento formal após tudo resolvido — comunicando o que foi aprendido e ajustado. O cliente recebe dois contactos distintos: um de operação, um de gestão. Isso transmite organização e seriedade.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Comunicar o problema sem ter pelo menos o próximo passo definido</div>
+        <div class="never-item">Deixar sem fechamento formal — o cliente não deve ficar sem saber o que foi aprendido</div>
+        <div class="never-item">Prometer que "não vai acontecer de novo" sem explicar o que foi ajustado</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R6 -->
+  <div class="roteiro" id="r6">
+    <div class="roteiro-header" onclick="toggle('r6')">
+      <div>
+        <div class="roteiro-title">6. Pesquisa de satisfação — 7 dias após embarque</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-gold">Halana</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">7 dias após saída</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Aqui é a Halana da Ramos Duarte. Passando com duas perguntas rápidas sobre a operação de <span class="ph">[data / rota]</span>:
+
+1. O prazo foi cumprido conforme o combinado?
+2. Há algo que poderíamos ter feito melhor?
+
+Pode responder aqui mesmo, leva menos de um minuto. 🙏</div>
+
+      <p class="section-title">Variação — cliente que já deu feedback positivo em 48h</p>
+      <div class="variation">
+        <div class="variation-msg">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Sei que a operação de <span class="ph">[data / rota]</span> correu bem — mas se tiver algum detalhe para afinarmos, pode falar. Estamos sempre atentos aos pontos finos.</div>
+      </div>
+
+      <p class="section-title">Regra das 2 perguntas</p>
+      <div class="instruction">As duas perguntas são <strong>fixas — não alteres</strong>. O que personaliza é a referência à operação. Pesquisas longas não são respondidas. Pesquisas curtas são. Nunca envies se o cliente ainda tem uma ocorrência em aberto.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Adicionar mais de duas perguntas</div>
+        <div class="never-item">Enviar com ocorrência ainda em aberto</div>
+        <div class="never-item">Ignorar resposta negativa — acção imediata no próprio dia</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCO 2: ONBOARDING -->
+  <div class="block-label"><span>Onboarding — acontece uma vez</span></div>
+
+  <!-- R7 -->
+  <div class="roteiro" id="r7">
+    <div class="roteiro-header" onclick="toggle('r7')">
+      <div>
+        <div class="roteiro-title">7. Mensagem de boas-vindas</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-gold">Halana ou Pedro</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">Dia 1 — após fechamento</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Sou <span class="ph">[Halana / Pedro]</span>, da Ramos Duarte. Ficamos muito felizes em ter <span class="ph">[nome da empresa]</span> como parceiro — e quero que você saiba desde já como vai ser essa relação.
+
+Aqui na RD, funcionamos como a extensão da sua logística. Você foca na produção — a parte do transporte é com a gente. Isso significa que você não precisa ficar atrás de informação: a gente chega antes.
+
+Na prática, você vai perceber isso assim:
+
+Antes de cada embarque, você recebe confirmação com o motorista, a rota e o horário previsto.
+
+Quando a carga chegar, enviamos o canhoto na hora — sem precisar pedir.
+
+Se houver qualquer imprevisto no caminho, você é o primeiro a saber — junto com o que já foi feito para resolver.
+
+A cada trimestre, um resumo das suas operações: prazos, entregas e qualquer ponto de atenção.
+
+Estamos aqui para que o transporte nunca seja uma preocupação para você.
+
+Sua primeira operação está prevista para <span class="ph">[data / rota]</span>. Qualquer dúvida, pode chamar aqui.
+
+Bem-vindo à parceria. 🤝</div>
+
+      <p class="section-title">Variação — agronegócio</p>
+      <div class="variation">
+        <div class="variation-label"><div class="variation-dot" style="background:#1D9E75;"></div>Agronegócio</div>
+        <div class="variation-msg">...Entendemos que no agro o timing é tudo — atraso na carga pode significar perda na produção. Por isso nosso compromisso é com a prontidão: quando você precisar, já estamos prontos...</div>
+      </div>
+
+      <p class="section-title">Variação — indústria</p>
+      <div class="variation">
+        <div class="variation-label"><div class="variation-dot" style="background:#7F77DD;"></div>Indústria</div>
+        <div class="variation-msg">...Sabemos que linha de produção parada é prejuízo imediato. Nossa função é garantir que o transporte nunca seja o gargalo da sua operação — você produz, a gente entrega...</div>
+      </div>
+
+      <p class="section-title">Variação — construção civil</p>
+      <div class="variation">
+        <div class="variation-label"><div class="variation-dot" style="background:#BA7517;"></div>Construção civil</div>
+        <div class="variation-msg">...No canteiro de obras, material que não chegou é obra parada. Nosso compromisso é com o prazo — você agenda, a gente cumpre e te avisa quando estiver feito...</div>
+      </div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction">Substitui sempre os campos em dourado. Se souberes algo específico da operação do cliente — tipo de carga, rota habitual — menciona: <strong>"Já estamos preparados para a rota BA→MT com carga de grãos."</strong> Isso mostra atenção antes mesmo da primeira viagem.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Enviar sem nome e algo específico do cliente — template idêntico para todos não é boas-vindas</div>
+        <div class="never-item">Mencionar preço, desconto ou condição comercial</div>
+        <div class="never-item">Usar tom excessivamente formal — "prezado cliente" cria distância</div>
+        <div class="never-item">Enviar mais de 48h após o fechamento — o timing é parte do impacto</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R8 -->
+  <div class="roteiro" id="r8">
+    <div class="roteiro-header" onclick="toggle('r8')">
+      <div>
+        <div class="roteiro-title">8. Checklist da primeira operação</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-purple">Pedro</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">Dia 5 — antes da 1ª viagem</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Estamos a poucos dias da sua primeira operação com a gente e quero confirmar alguns pontos para garantir que tudo corra perfeitamente.
+
+Pode me confirmar:
+
+✓ Endereço completo de coleta: <span class="ph">[preenche se já souberes]</span>
+✓ Endereço completo de entrega: <span class="ph">[preenche se já souberes]</span>
+✓ Contacto no destino (nome e telefone): <span class="ph">[aguardando]</span>
+✓ Tipo de descarga: <span class="ph">[paletizada / granel / outro]</span>
+✓ Documentação especial necessária: <span class="ph">[sim / não]</span>
+
+Assim que confirmar, já deixamos tudo pronto do nosso lado.</div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction"><strong>Nunca envies todos os campos em branco.</strong> Preenche o que já sabes antes de enviar. O cliente percebe que fizeste o trabalho de casa — e isso já é diferencial.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Enviar todos os campos em branco — mostra falta de preparação</div>
+        <div class="never-item">Pedir informações que já foram partilhadas no fechamento</div>
+        <div class="never-item">Enviar no dia anterior à coleta — dá tempo ao cliente para responder</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R9 -->
+  <div class="roteiro" id="r9">
+    <div class="roteiro-header" onclick="toggle('r9')">
+      <div>
+        <div class="roteiro-title">9. Check-in de 30 dias</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-gold">Halana</span>
+          <span class="tag tag-gray">Ligação</span>
+          <span class="tag tag-gray">Dia 30</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Roteiro de ligação</p>
+
+      <div class="script-line">
+        <div class="script-who">Abertura</div>
+        <div class="script-text">"Oi <span class="ph">[Nome]</span>, aqui é a Halana da Ramos Duarte. Tudo bem? Liguei porque completamos um mês juntos e quero saber como foi essa primeira fase para vocês."</div>
+      </div>
+
+      <div class="script-line">
+        <div class="script-who">Pergunta principal — e silêncio depois</div>
+        <div class="script-text">"Como foi a experiência até agora? Tem algo que poderíamos ter feito diferente ou melhor?"</div>
+      </div>
+
+      <div class="script-line">
+        <div class="script-who">Se a resposta for positiva</div>
+        <div class="script-text">"Fico feliz em ouvir isso. Estamos aqui para continuar assim — e qualquer detalhe que queira ajustar, pode chamar directamente comigo."</div>
+      </div>
+
+      <div class="script-line">
+        <div class="script-who">Se trouxer ponto de melhoria</div>
+        <div class="script-text">"Obrigada por falar — isso é importante para nós. Vou verificar e te dou retorno até <span class="ph">[data]</span> com o que vamos ajustar."</div>
+      </div>
+
+      <div class="script-line">
+        <div class="script-who">Encerramento</div>
+        <div class="script-text">"Continuamos à disposição. Qualquer coisa, pode chamar aqui ou pelo WhatsApp. Obrigada pelo tempo."</div>
+      </div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction">Se houve ocorrência no primeiro mês, menciona directamente na abertura: <strong>"Sei que tivemos X na primeira operação — quero saber como ficou do seu lado."</strong> Não evites o assunto — enfrentá-lo mostra maturidade. Lê o histórico no Notion antes de ligar.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Transformar o check-in em call comercial — não é momento de vender</div>
+        <div class="never-item">Ligar sem ter lido o histórico do cliente no Notion</div>
+        <div class="never-item">Prometer ajustes sem prazo definido — compromisso sem data não é compromisso</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCO 3: RELACIONAMENTO CONTÍNUO -->
+  <div class="block-label"><span>Relacionamento contínuo</span></div>
+
+  <!-- R10 -->
+  <div class="roteiro" id="r10">
+    <div class="roteiro-header" onclick="toggle('r10')">
+      <div>
+        <div class="roteiro-title">10. Check-in mensal</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-purple">Pedro</span>
+          <span class="tag tag-gray">WhatsApp ou ligação</span>
+          <span class="tag tag-gray">Todo mês</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Passando para saber como está a demanda de vocês para o próximo mês. Tem alguma operação prevista que possamos já ir alinhando?
+
+Qualquer coisa, estou aqui.</div>
+
+      <p class="section-title">Variação — com antecipação de sazonalidade</p>
+      <div class="variation">
+        <div class="variation-msg">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Estamos a aproximar-nos de <span class="ph">[safra / pico de final de ano / período específico]</span> e quero garantir que estamos preparados para a operação de vocês.
+
+Tem previsão de volume para esse período? Assim já deixamos tudo alinhado com antecedência.</div>
+      </div>
+
+      <p class="section-title">Variação — com inteligência de mercado</p>
+      <div class="variation">
+        <div class="variation-msg">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Vi uma informação que pode ser relevante para vocês: <span class="ph">[descreve em uma linha — ex: "houve interditação na BR-116 que pode afetar prazos nessa rota nas próximas semanas"]</span>.
+
+Já estamos adaptando rotas alternativas. Qualquer coisa me chama.</div>
+      </div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction"><strong>Nunca envies o mesmo texto todos os meses.</strong> Varia o ângulo — demanda futura, antecipação de pico, informação do sector. O cliente percebe quando é automático e o impacto cai a zero.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Enviar o mesmo texto todo mês — o cliente percebe e ignora</div>
+        <div class="never-item">Transformar o check-in em proposta comercial</div>
+        <div class="never-item">Saltar meses — a cadência mensal é o que mantém a RD no radar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R11 -->
+  <div class="roteiro" id="r11">
+    <div class="roteiro-header" onclick="toggle('r11')">
+      <div>
+        <div class="roteiro-title">11. Envio do relatório trimestral de performance</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-gold">Halana</span>
+          <span class="tag tag-gray">WhatsApp ou e-mail</span>
+          <span class="tag tag-gray">A cada 3 meses</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Segue o resumo das operações do <span class="ph">[período — ex: Janeiro a Março]</span>:
+
+• Viagens realizadas: <span class="ph">[número]</span>
+• Prazo médio cumprido: <span class="ph">[percentagem]</span>%
+• Ocorrências: <span class="ph">[número]</span> — <span class="ph">[todas resolvidas / X em acompanhamento]</span>
+• Rotas operadas: <span class="ph">[lista das principais rotas]</span>
+
+<span class="ph">[Se houver algo positivo a destacar — ex: "Neste trimestre cumprimos 100% dos prazos na rota BA→SP."]</span>
+
+<span class="ph">[Se houver algo a melhorar — ex: "Identificamos uma oportunidade de melhoria na comunicação de saída e já ajustamos."]</span>
+
+Qualquer dúvida ou sugestão, estou aqui. Obrigada pela parceria.</div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction">Os dados vêm do Google Sheets. <strong>Nunca envies um relatório com campos em branco.</strong> Se foi um trimestre sem ocorrências, destaca isso — é um diferencial. Se houve problema, apresenta o que foi ajustado.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Enviar relatório sem dados reais preenchidos</div>
+        <div class="never-item">Omitir ocorrências que aconteceram — transparência é o diferencial</div>
+        <div class="never-item">Enviar sem mensagem personalizada — o relatório sozinho parece automático</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCO 4: PROTOCOLOS DE DESVIO -->
+  <div class="block-label"><span>Protocolos de desvio</span></div>
+
+  <!-- R12 -->
+  <div class="roteiro" id="r12">
+    <div class="roteiro-header" onclick="toggle('r12')">
+      <div>
+        <div class="roteiro-title">12. Ligação de intervenção — cliente em risco</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-gold">Halana ou Pedro</span>
+          <span class="tag tag-coral">Urgente — no próprio dia</span>
+          <span class="tag tag-gray">Ligação directa</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Roteiro de ligação — sem script rígido</p>
+
+      <div class="script-line">
+        <div class="script-who">Abertura</div>
+        <div class="script-text">"Oi <span class="ph">[Nome]</span>, aqui é a <span class="ph">[Halana / Pedro]</span> da Ramos Duarte. Liguei porque quero falar diretamente com você sobre <span class="ph">[situação identificada]</span>. Tem um momento?"</div>
+      </div>
+
+      <div class="script-line">
+        <div class="script-who">Escuta activa — deixa o cliente falar</div>
+        <div class="script-text">"Quero entender melhor o que aconteceu do seu lado. Pode me contar?"</div>
+      </div>
+
+      <div class="script-line">
+        <div class="script-who">Comprometimento</div>
+        <div class="script-text">"Entendo. Isso não deveria ter acontecido e é nossa responsabilidade resolver. Vou pessoalmente garantir que <span class="ph">[descreve a acção concreta]</span> até <span class="ph">[data]</span>. Posso te dar retorno assim que estiver feito?"</div>
+      </div>
+
+      <div class="script-line">
+        <div class="script-who">Encerramento</div>
+        <div class="script-text">"Obrigada por falar comigo directamente. É assim que queremos resolver as coisas — sem intermediário. Falo contigo até <span class="ph">[data/horário]</span>."</div>
+      </div>
+
+      <p class="section-title">Regra de ouro</p>
+      <div class="instruction">Esta ligação é <strong>sempre da diretoria</strong> — Halana ou Pedro. Nunca delegues. O cliente em risco precisa sentir o peso da relação. Sem script fixo — o tom é de conversa real, não de atendimento ao cliente. Lê o histórico completo no Notion antes de ligar.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Delegar para outra pessoa — a ligação é da diretoria</div>
+        <div class="never-item">Prometer sem prazo — "vamos ver" não retém ninguém</div>
+        <div class="never-item">Ser defensivo — o objectivo é ouvir e comprometer, não justificar</div>
+        <div class="never-item">Esperar mais de 24h para ligar após identificar o sinal de risco</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R13 -->
+  <div class="roteiro" id="r13">
+    <div class="roteiro-header" onclick="toggle('r13')">
+      <div>
+        <div class="roteiro-title">13. Reactivação de cliente adormecido</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-purple">Pedro</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">60+ dias sem operação</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Faz um tempo desde a nossa última operação juntos — a <span class="ph">[rota / data da última viagem]</span>. Quero saber como estão as coisas por aí.
+
+<span class="ph">[Contexto relevante — obrigatório. Exemplos:
+"Temos disponibilidade na rota BA→SP nas próximas semanas."
+"Com a safra a aproximar-se, já estamos organizando capacidade para essa rota."
+"Vi que houve mudança no corredor de frete dessa região — pode ser interessante para vocês."]</span>
+
+Quando fizer sentido retomar, estamos aqui.</div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction">O <strong>contexto relevante é obrigatório</strong> — é o que transforma esta mensagem de "sumiste?" para "pensámos em ti por este motivo específico". Sem contexto, é spam. Sempre referencia a última operação pelo nome da rota ou data.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Enviar sem referenciar a última operação</div>
+        <div class="never-item">Enviar sem contexto relevante — mensagem genérica é ignorada</div>
+        <div class="never-item">Tom de cobrança ou urgência — sempre tranquilo e de parceria</div>
+        <div class="never-item">Insistir mais de 3 vezes — após a terceira tentativa, reduz a cadência para semestral</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R14 -->
+  <div class="roteiro" id="r14">
+    <div class="roteiro-header" onclick="toggle('r14')">
+      <div>
+        <div class="roteiro-title">14. Contacto de conversão — cliente spot</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-purple">Pedro</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">30 dias após primeira operação</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Passando para saber como foi a operação de <span class="ph">[rota / data]</span> para vocês.
+
+Temos disponibilidade para a rota <span class="ph">[rota habitual]</span> no próximo mês. Tem alguma demanda prevista?</div>
+
+      <p class="section-title">Como personalizar</p>
+      <div class="instruction">Duas perguntas em sequência — primeiro o feedback, depois a proposta. <strong>Nunca vás directo à proposta sem perguntar sobre a experiência anterior.</strong> O cliente percebe a diferença entre quem se importa e quem só quer vender.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Ir directo à proposta sem perguntar sobre a operação anterior</div>
+        <div class="never-item">Enviar proposta genérica sem citar a rota específica do cliente</div>
+        <div class="never-item">Enviar depois de 30 dias — o timing é crítico para conversão</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R15 -->
+  <div class="roteiro" id="r15">
+    <div class="roteiro-header" onclick="toggle('r15')">
+      <div>
+        <div class="roteiro-title">15. Último contacto — porta aberta</div>
+        <div class="roteiro-meta">
+          <span class="tag tag-purple">Pedro</span>
+          <span class="tag tag-gray">WhatsApp</span>
+          <span class="tag tag-gray">90 dias — última tentativa activa</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+    <div class="roteiro-body">
+      <p class="section-title">Mensagem base</p>
+      <div class="msg-box">Oi <span class="ph">[Nome]</span>, tudo bem?
+
+Deixo aqui um último contacto da nossa parte. Quando fizer sentido retomar a parceria, estamos aqui — com a mesma atenção de sempre.
+
+Até mais. 🤝</div>
+
+      <p class="section-title">Regra de ouro</p>
+      <div class="instruction">Tom tranquilo. Sem pressão. Sem insistência. <strong>Saber quando parar é tão importante quanto saber quando insistir.</strong> Cliente que não foi pressionado guarda a RD na memória de forma positiva — e volta quando precisar.</div>
+
+      <div class="never-box">
+        <div class="never-title">Nunca fazer</div>
+        <div class="never-item">Tom de cobrança ou decepção — nunca demonstrar frustração</div>
+        <div class="never-item">Fazer mais uma proposta nesta mensagem — o momento já passou</div>
+        <div class="never-item">Enviar mais contactos após este — respeita o silêncio do cliente</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-brand">Ramos Duarte Transportes</div>
+    <div class="footer-note">Playbook Comercial — Roteiros da Jornada · v1</div>
+  </div>
+
+</div>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
